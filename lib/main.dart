@@ -45,7 +45,7 @@ String randomString() {
 }
 
 OpenAI openAI = OpenAI.instance.build(
-    token: "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",
+    token: "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",
     baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 5)),
     enableLog: true);
 
@@ -68,12 +68,9 @@ class _MyHomePageState extends State<MyHomePage> {
     dynamic conversations = await store.record("conversations").get(DB.db);
     if (conversations != null) {
       setState(() {
-        _conversations = conversations
-            .map((key, value) {
-              return MapEntry(key, value);
-            })
-            .toList()
-            .asMap();
+        conversations.entries.forEach((e) {
+          _conversations[e.key] = e.value;
+        });
       });
     }
   }
@@ -102,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
           role: e["author"] == "user" ? Role.user : Role.assistant,
           content: e["text"])),
       Messages(role: Role.user, content: message.text)
-    ], maxToken: 400, model: GptTurboChatModel());
+    ], maxToken: 200, model: GptTurboChatModel());
 
     ChatCTResponse? reposne = await openAI.onChatCompletion(request: request);
 
